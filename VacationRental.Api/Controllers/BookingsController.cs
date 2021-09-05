@@ -53,7 +53,7 @@ namespace VacationRental.Api.Controllers
         {
             if (model.Nights <= 0) return BadRequest("Nigts must be positive");
 
-            model.Rental = this._rentalService.Get(model.RentalId);
+            model.SetRental(this._rentalService.Get(model.RentalId));
 
             if (model.Rental == null) return NotFound("Rental not found");
 

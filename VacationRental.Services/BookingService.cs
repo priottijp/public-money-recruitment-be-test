@@ -11,12 +11,15 @@ namespace VacationRental.Services
     public class BookingService : IBookingService
     {
         private readonly IBookingRepository _bookingRepository;
+        private readonly IRentalRepository _rentalRepository;
+
         private readonly IMapper _mapper;
 
-        public BookingService(IBookingRepository bookingRepository, IMapper mapper)
+        public BookingService(IBookingRepository bookingRepository, IMapper mapper, IRentalRepository rentalRepository)
         {
             _bookingRepository = bookingRepository;
             _mapper = mapper;
+            _rentalRepository = rentalRepository;
         }
 
         public BookingViewModel Get(int bookingId)
@@ -31,10 +34,10 @@ namespace VacationRental.Services
                 var count = 0;
                 foreach (var booking in bookings)
                 {
-                    int existingBookingDays = booking.Nights + model.Rental.PreparationTimeInDays;
-                    int newBookingDays = booking.Nights + model.Rental.PreparationTimeInDays;
+                    int existingBookingDays = booking.Nights + _rentalRepository.Get(booking.RentalId).PreparationTimeInDays;
+                    int newBookingDays = model.Nights + model.Rental.PreparationTimeInDays;
 
-                    if (booking.RentalId == model.RentalId
+                    if (booking.RentalId == model.Rental.Id
                         && (booking.Start <= model.Start.Date && booking.Start.AddDays(existingBookingDays) > model.Start.Date)
                         || (booking.Start < model.Start.AddDays(newBookingDays) && booking.Start.AddDays(existingBookingDays) >= model.Start.AddDays(newBookingDays))
                         || (booking.Start > model.Start && booking.Start.AddDays(existingBookingDays) < model.Start.AddDays(newBookingDays)))
@@ -52,7 +55,7 @@ namespace VacationRental.Services
             {
                 Id = resource.Id,
                 Nights = model.Nights,
-                RentalId = model.RentalId,
+                RentalId = model.Rental.Id,
                 Start = model.Start.Date,
                 Unit = this.GetAvailableUnit(model.Rental.Units, bookedUnits)
             };

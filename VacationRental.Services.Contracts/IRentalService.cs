@@ -6,5 +6,6 @@ namespace VacationRental.Services.Contracts
     {
         RentalViewModel Get(int RentalId);
         int SaveRental(RentalBindingModel model);
+        bool UpdateRental(int rentalId, RentalBindingModel model);
     }
 }

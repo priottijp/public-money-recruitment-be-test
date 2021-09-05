@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using VacationRental.DataAccess.Contracts;
 
 namespace VacationRental.DataAccess
@@ -21,7 +21,7 @@ namespace VacationRental.DataAccess
         public TClass Get<TKey>(TKey key)
         => _vacationContext.Find<TClass>(key);
 
-        public IEnumerable<TClass> GetAll()
+        public IQueryable<TClass> GetAll()
         => _vacationContext.Set<TClass>();
 
         public void Insert(TClass obj)

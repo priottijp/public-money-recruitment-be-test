@@ -10,12 +10,10 @@ namespace VacationRental.Api.Controllers
     public class RentalsController : ControllerBase
     {
         private readonly IRentalService _rentalService;
-        private readonly IBookingService _bookingService;
 
-        public RentalsController(IRentalService rentalService, IBookingService bookingService)
+        public RentalsController(IRentalService rentalService)
         {
             this._rentalService = rentalService;
-            this._bookingService = bookingService;
         }
 
         /// <summary>
@@ -47,14 +45,16 @@ namespace VacationRental.Api.Controllers
         [Route("{rentalId:int}")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public IActionResult Put(int rentalId, RentalBindingModel model)
         {
-            var rental = this._rentalService.Get(rentalId);
-
-            if (rental == null)
+            if (_rentalService.Get(rentalId) == null)
                 return NotFound("Rental not found");
 
-            return Ok(rental);
+            if (!_rentalService.UpdateRental(rentalId, model))
+                return BadRequest("Rental could not be updated due to overlapping bookings");
+
+            return Ok("Rental succesfully updated");
 
         }
 

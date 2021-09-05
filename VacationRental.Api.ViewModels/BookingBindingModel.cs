@@ -26,7 +26,12 @@ namespace VacationRental.Api.ViewModels
         /// </summary>
         public int Nights { get; set; }
 
-        public RentalViewModel Rental { get; set; }
+        public RentalViewModel Rental { get; private set; }
+
+        public void SetRental(RentalViewModel rental)
+        {
+            this.Rental = rental;
+        }
 
     }
 }
