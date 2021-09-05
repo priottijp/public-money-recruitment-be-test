@@ -1,11 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
-using VacationRental.Api.Models;
+using VacationRental.DataAccess;
+using VacationRental.DataAccess.Contracts;
+using VacationRental.Services;
+using VacationRental.Services.Contracts;
+using AutoMapper;
+using VacationRental.Services.Mappings;
 
 namespace VacationRental.Api
 {
@@ -18,18 +26,45 @@ namespace VacationRental.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime. Use this method to add services to the container. 
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddSwaggerGen(opts => opts.SwaggerDoc("v1", new Info { Title = "Vacation rental information", Version = "v1" }));
 
-            services.AddSingleton<IDictionary<int, RentalViewModel>>(new Dictionary<int, RentalViewModel>());
-            services.AddSingleton<IDictionary<int, BookingViewModel>>(new Dictionary<int, BookingViewModel>());
+            services.AddDbContext<VacationApiContext>(opt =>
+                opt.UseInMemoryDatabase("VacationApiContext"));
+
+            // Auto Mapper Configurations
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
+            services.AddSwaggerGen(opts =>
+            {
+                opts.SwaggerDoc("v1", new Info { Title = "Vacation rental information", Version = "v1" });
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                opts.IncludeXmlComments(xmlPath);
+            }
+            );
+
+            services.AddTransient<IBookingRepository, BookingRepository>();
+            services.AddTransient<IRentalRepository, RentalRepository>();
+            services.AddTransient<IBookingService, BookingService>();
+            services.AddTransient<IRentalService, RentalService>();
+            services.AddTransient<ICalendarService, CalendarService>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using VacationRental.Api.Models;
+using VacationRental.Api.ViewModels;
+using VacationRental.Services.Contracts;
 
 namespace VacationRental.Api.Controllers
 {
@@ -9,35 +9,66 @@ namespace VacationRental.Api.Controllers
     [ApiController]
     public class RentalsController : ControllerBase
     {
-        private readonly IDictionary<int, RentalViewModel> _rentals;
+        private readonly IRentalService _rentalService;
+        private readonly IBookingService _bookingService;
 
-        public RentalsController(IDictionary<int, RentalViewModel> rentals)
+        public RentalsController(IRentalService rentalService, IBookingService bookingService)
         {
-            _rentals = rentals;
+            this._rentalService = rentalService;
+            this._bookingService = bookingService;
         }
 
+        /// <summary>
+        /// Get Rental by Rental Id
+        /// </summary>
+        /// <param name="rentalId">Rental identifier</param>
+        /// <returns>Searched Rental</returns>
         [HttpGet]
         [Route("{rentalId:int}")]
-        public RentalViewModel Get(int rentalId)
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public IActionResult Get(int rentalId)
         {
-            if (!_rentals.ContainsKey(rentalId))
-                throw new ApplicationException("Rental not found");
+            var rental = this._rentalService.Get(rentalId);
 
-            return _rentals[rentalId];
+            if (rental == null)
+                return NotFound("Rental not found");
+
+            return Ok(rental);
         }
 
-        [HttpPost]
-        public ResourceIdViewModel Post(RentalBindingModel model)
+        /// <summary>
+        /// Updates an existing Rental
+        /// </summary>
+        /// <param name="rentalId">Rental identifier</param>
+        /// <param name="model">Available units and extra preparation days</param>
+        /// <returns>Updated Rental</returns>
+        [HttpPut]
+        [Route("{rentalId:int}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public IActionResult Put(int rentalId, RentalBindingModel model)
         {
-            var key = new ResourceIdViewModel { Id = _rentals.Keys.Count + 1 };
+            var rental = this._rentalService.Get(rentalId);
 
-            _rentals.Add(key.Id, new RentalViewModel
-            {
-                Id = key.Id,
-                Units = model.Units
-            });
+            if (rental == null)
+                return NotFound("Rental not found");
 
-            return key;
+            return Ok(rental);
+
+        }
+
+        /// <summary>
+        /// Creates a new Rental
+        /// </summary>
+        /// <param name="model">Available units and extra preparation days</param>
+        /// <returns>Created Rental</returns>
+        [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public IActionResult Post(RentalBindingModel model)
+        {
+            return Ok(this._rentalService.SaveRental(model));
         }
     }
 }
