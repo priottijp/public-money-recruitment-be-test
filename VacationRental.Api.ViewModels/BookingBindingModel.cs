@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace VacationRental.Api.ViewModels
 {
@@ -26,6 +27,7 @@ namespace VacationRental.Api.ViewModels
         /// </summary>
         public int Nights { get; set; }
 
+        [JsonIgnore]
         public RentalViewModel Rental { get; private set; }
 
         public void SetRental(RentalViewModel rental)
