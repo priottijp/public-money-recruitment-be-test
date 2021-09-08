@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>VacationRental.Api</name>
+    </assembly>
+    <members>
+        <member name="M:VacationRental.Api.Controllers.BookingsController.Get(System.Int32)">
+            <summary>
+            Get Booking by booking Id
+            </summary>
+            <param name="bookingId">Booking identifier</param>
+            <returns>Searched booking</returns>
+        </member>
+        <member name="M:VacationRental.Api.Controllers.BookingsController.Post(VacationRental.Api.ViewModels.BookingBindingModel)">
+            <summary>
+            Creates Booking 
+            </summary>
+            <param name="model">Rental identifier, starting date and number of nights.</param>
+            <returns>Booking identifier</returns>
+        </member>
+        <member name="M:VacationRental.Api.Controllers.CalendarController.Get(System.Int32,System.DateTime,System.Int32)">
+            <summary>
+            Retrieves the availability of an existing rental
+            </summary>
+            <param name="rentalId">Rental identifier</param>
+            <param name="start">Starting date</param>
+            <param name="nights">Number of nights.</param>
+            <returns>Created calendar entrance</returns>
+        </member>
+        <member name="M:VacationRental.Api.Controllers.RentalsController.Get(System.Int32)">
+            <summary>
+            Get Rental by Rental Id
+            </summary>
+            <param name="rentalId">Rental identifier</param>
+            <returns>Searched Rental</returns>
+        </member>
+        <member name="M:VacationRental.Api.Controllers.RentalsController.Put(System.Int32,VacationRental.Api.ViewModels.RentalBindingModel)">
+            <summary>
+            Updates an existing Rental
+            </summary>
+            <param name="rentalId">Rental identifier</param>
+            <param name="model">Available units and extra preparation days</param>
+            <returns>Updated Rental</returns>
+        </member>
+        <member name="M:VacationRental.Api.Controllers.RentalsController.Post(VacationRental.Api.ViewModels.RentalBindingModel)">
+            <summary>
+            Creates a new Rental
+            </summary>
+            <param name="model">Available units and extra preparation days</param>
+            <returns>Created Rental</returns>
+        </member>
+        <member name="M:VacationRental.Api.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method gets called by the runtime. Use this method to add services to the container. 
+            </summary>
+            <param name="services"></param>
+        </member>
+        <member name="M:VacationRental.Api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        </member>
+    </members>
+</doc>

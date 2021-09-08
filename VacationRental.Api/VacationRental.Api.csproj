@@ -5,12 +5,23 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\jupap\OneDrive\Documents\Lodgify\LodgifyApplication\public-money-recruitment-be-test\VacationRental.Api\VacationRental.Api.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="4.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="4.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VacationRental.Api.ViewModels\VacationRental.Api.ViewModels.csproj" />
+    <ProjectReference Include="..\VacationRental.DataAccess\VacationRental.DataAccess.csproj" />
+    <ProjectReference Include="..\VacationRental.Services.Contracts\VacationRental.Services.Contracts.csproj" />
+    <ProjectReference Include="..\VacationRental.Services\VacationRental.Services.csproj" />
   </ItemGroup>
 
 </Project>
